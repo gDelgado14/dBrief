@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" data-framework="backbonejs">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<title>Backbone.js + Firebase • Brief</title>
+
+	<link rel="stylesheet" href="bower_components/bower-foundation-css/foundation.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Work+Sans|Rubik" rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="assets/base.css">
+
+</head>
+
+<body>
+
+	<!--- Navigation Bar  --->
+	<nav class="top-bar text-center"> <img src="assets/img/dbrief_logo.png" alt="dbrief | online collaborative creative briefs"> </nav>
+
+	<!--- Body --->
+	<main>
+
+		<div class="large-4 medium-5 columns">
+			<!--- New Project Button --->
+			<div class="row">
+				<button class="button">New Project</button>
+			</div>
+
+
+			<!--- Login Headers--->
+			<div class="row">
+				<h2>Please Login</h2>
+			</div>
+			<div class="row">
+				<h4 class="subheader">You must login to access your files</h4>
+			</div>
+
+			<!--- Login Form --->
+			<form>
+				<div class="row">
+					<input type="text" placeholder="Email Address">
+				</div>
+				<div class="row">
+					<input type="password" aria-describedby="passwordHelpText" placeholder="Password">
+				</div>
+				<div class="row">
+					<input type="submit" class="button" value="Submit">
+				</div>
+			</form>
+		</div>
+		<div class="columns"></div>
+
+
+	</main>
+	<script data-main="js/main" src="bower_components/requirejs/require.js"></script>
+</body>
+
+</html>

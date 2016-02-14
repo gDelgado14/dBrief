@@ -1,0 +1,9 @@
+{
+  "firebase": "dbrief",
+  "public": "public",
+  "ignore": [
+    "firebase.json",
+    "**/kitchenSink.html",
+    "**/.*"
+  ]
+}
