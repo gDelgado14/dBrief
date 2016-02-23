@@ -1,143 +1,65 @@
-/*global require*/
-'use strict';
+requirejs.config({
 
-// Require.js allows us to configure shortcut alias
-require.config({
-	// The shim config allows us to configure dependencies for
-	// scripts that do not call define() to register a module
-	shim: {
-		underscore: {
-			exports: '_'
-		},
-		backbone: {
-			deps: [
-				'underscore',
-				'jquery'
-			],
-			exports: 'Backbone'
-		},
-
-		/* Foundation */
-		'foundation.core': {
-        deps: [
-        'jquery',
-        'modernizr'
-        ],
-        exports: 'Foundation'
+  shim: {
+    backbone: {
+      deps: [
+        'underscore',
+        'jquery'
+      ],
+      exports: 'Backbone'
     },
-    'foundation.abide': {
-        deps: [
-        'foundation.core'
-        ]
+    backbonefire: {
+      deps: [
+        'underscore',
+        'backbone'
+      ]
     },
-    'foundation.accordion': {
-        deps: [
-        'foundation.core'
-        ]
-    },
-    'foundation.dropdown': {
-        deps: [
-        'foundation.core'
-        ]
-    },
-    'foundation.equalizer': {
-        deps: [
-        'foundation.core'
-        ]
-    },
-    'foundation.interchange': {
-        deps: [
-        'foundation.core'
-        ]
-    },
-    'foundation.magellan': {
-        deps: [
-        'foundation.core'
-        ]
-    },
-    'foundation.offcanvas': {
-        deps: [
-        'foundation.core'
-        ]
-    },
-    'foundation.orbit': {
-        deps: [
-        'foundation.core'
-        ]
-    },
-    'foundation.reveal': {
-        deps: [
-        'foundation.core'
-        ]
-    },
-    'foundation.tabs': {
-        deps: [
-        'foundation.core'
-        ]
-    },
-    'foundation.tooltip': {
-        deps: [
-        'foundation.core'
-        ]
+    firebase: {
+      exports: 'Firebase'
     }
-	},
-	paths: {
-		jquery: '../bower_components/jquery/dist/jquery.min',
-		underscore: '../bower_components/underscore/underscore-min',
-		backbone: '../bower_components/backbone/backbone',
-		text: '../bower_components/requirejs-text/text',
-		firebase: '../bower_components/firebase/firebase',
-		backbonefire: 'backbonefire',
-		modernizr: '../bower_components/modernizr-built/dist/modernizr.min',
+  },
 
-		/* Foundation */
-		'foundation.core': '../bower_components/foundation-sites/js/foundation.core',
-    'foundation.abide': '../bower_components/foundation-sites/js/foundation.abide',
-    'foundation.accordion': '../bower_components/foundation-sites/js/foundation.accordion',
-    'foundation.dropdown': '../bower_components/foundation-sites/js/foundation.dropdown',
-    'foundation.equalizer': '../bower_components/foundation-sites/js/foundation.equalizer',
-    'foundation.interchange': '../bower_components/foundation-sites/js/foundation.interchange',
-    'foundation.magellan': '../bower_components/foundation-sites/js/foundation.magellan',
-    'foundation.offcanvas': '../bower_components/foundation-sites/js/foundation.offcanvas',
-    'foundation.orbit': '../bower_components/foundation-sites/js/foundation.orbit',
-    'foundation.reveal': '../bower_components/foundation-sites/js/foundation.reveal',
-    'foundation.tabs': '../bower_components/foundation-sites/js/foundation.tabs',
-    'foundation.tooltip': '../bower_components/foundation-sites/js/foundation.tooltip'
-	}
+  paths: {
+    jquery: '../bower_components/jquery-2.1.0.min/index',
+    underscore: '../bower_components/underscore/underscore',
+    backbone: '../bower_components/backbone/backbone',
+    text: '../bower_components/text/text',
+    firebase: '../bower_components/firebase/firebase-debug',
+    backbonefire: '../bower_components/backbonefire/dist/backbonefire'
+  }
 });
 
 require([
-	'backbone',
-	'jquery',
-	'foundation.core'
-], function (Backbone, $) {
-	/*jshint nonew:false*/
-	// Initialize routing and start Backbone.history()
-	// info on templates: https://github.com/requirejs/text
-	/*$(document).foundation(function() {
+  'backbone',
+  'underscore',
+  'views/appview',
+  'collections/books',
+  'routers/router'
+],
+function(Backbone, _, AppView, Books, Workspace, Firebase) {
+  // note that there may be load failures because dependancies havent
+  // been explicitly specified in require.config
+  // this is because all current js modules have AMD exports in their
+  // definitions. Therefore assuming dependancies will resolve without
+  // additional configuration.
 
-			Backbone.history.start();
-	});*/
+  // baseUrl -- > 'js'
 
-	console.log("hhe");
+  /*
+    TODO:
+      - use animated loading icon while firebase fetches remote data
+        - how to detect when firebase has finished fetching
+  */
+  window.App = {
+    Vent: _.extend({}, Backbone.Events)
+  };
+
+
+  // pass instantiated Books collections
+  // emtpy list of rendered models
+  new AppView({ collection: Books });
+
+  new Workspace();
+  Backbone.history.start();
 
 });
-
-
-/*
-
-require([
-	'backbone',
-	'views/app',
-	'routers/router',
-	'collections/todos'
-], function (Backbone, AppView, Workspace, Todos) {
-	/*jshint nonew:false
-	// Initialize routing and start Backbone.history()
-	// info on templates: https://github.com/requirejs/text
-	console.log("yeee");
-	Backbone.history.start();
-});
-
-
-*/

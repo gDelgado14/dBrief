@@ -1,26 +1,37 @@
-/*global define*/
 define([
-	'jquery',
-	'backbone',
-	'collections/todos',
-	'common'
-], function ($, Backbone, Todos, Common) {
-	'use strict';
+  'jquery',
+  'backbone',
+  'firebase'
+], function($, Backbone, Firebase) {
 
-	var TodoRouter = Backbone.Router.extend({
-		routes: {
-			'*filter': 'setFilter'
-		},
+  var BriefRouter = Backbone.Router.extend({
 
-		setFilter: function (param) {
-			// Set the current filter to be used
-			Common.TodoFilter = param || '';
+    // TODO:
+    //  - get auth data for all routes and rout accordingly
 
-			// Trigger a collection filter event, causing hiding/unhiding
-			// of the Todo view items
-			Todos.trigger('filter');
-		}
-	});
+    routes: {
+      '': 'testFunc'
+    },
 
-	return TodoRouter;
+    testFunc: function() {
+      //
+      console.log('testfunc called');
+
+      var ref = new Firebase('https://dbrief.firebaseio.com'),
+          auth = ref.getAuth();
+
+      if (auth) {
+        console.log('user authenticated!');
+      } else {
+        // render register.html
+
+        window.App.Vent.trigger('init');
+
+
+      }
+    }
+
+  });
+
+  return BriefRouter
 });
