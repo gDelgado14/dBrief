@@ -2,9 +2,10 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'models/book',
-  'text!templates/register.html'
-], function($, _, Backbone, Book, registerForm) {
+  'text!templates/register.html',
+  'text!templates/signin.html',
+  'firebase'
+], function($, _, Backbone, registerForm, signInForm, Firebase) {
 
   // the top level piece of UI
   var AppView = Backbone.View.extend({
@@ -15,7 +16,12 @@ define([
     // compile book template
     //template: _.template(registerForm),
 
-    events: {},
+    events: {
+      'click #get-signin-form': 'getSignInForm',
+      'click #get-signup-form': 'getSignUpForm',
+      'click #sign-in-req': 'signInReq',
+      'click #register-req':  'registerReq'
+    },
 
     initialize: function() {
 
@@ -24,6 +30,8 @@ define([
       // and once client receives data
       //this.listenTo(this.collection, 'sync', this.render);
 
+      this.ref = new Firebase('https://dbrief.firebaseio.com');
+
       // no call to fetch is required, and any calls to fetch will be ignored
       // this.collection.fetch();
 
@@ -31,11 +39,16 @@ define([
       // backbonefire automatically syncs new model
       this.listenTo(this.collection, 'loaded', this.render);
 
-      Window.App.Vent.on('init', initApp);
+      Window.App.Vent.on("authed", this.fetchBriefs);
 
-      // no need to call render directly
-      // firebase uses 'collection.add' for each model
-      //this.render();
+      // on init (from router), call getSignUpForm and pass the view as context for this
+      //Window.App.Vent.on('init', this.getSignUpForm, this);
+
+
+
+      // note: firebase uses 'collection.add' for each model
+      this.getSignUpForm();
+
 
     },
 
@@ -69,12 +82,77 @@ define([
 
     },
 
-    initApp: function() {
-      console.log('initapp called!!!');
+    getSignInForm: function() {
+      // toggle between singup and signin
+      this.$('#test-insertion-point').html(signInForm);
+    },
+
+    getSignUpForm: function() {
+      // toggle between singup and signin
       this.$('#test-insertion-point').html(registerForm);
+    },
+
+    signInReq: function signInReq() {
+      //named function for the sake of debugging
+
+      var em = this.$('#emailInput').val(),
+          ps = this.$('#passInput').val();
+
+      console.log("email: ", em);
+      console.log("pass: ", ps);
+
+      this.ref.authWithPassword({
+        email: em,
+        password: ps
+      }, function(error, authData) {
+        if (error) {
+          console.log("Login Failed! ", error);
+        } else {
+          console.log("Authenticated successfully with payload: ", authData);
+          Window.App.Vent.trigger("authed");
+        }
+      });
+
+    },
+
+    registerReq: function registerReq() {
+      //named function for the sake of debugging
+
+      var self = this,
+          em = self.$('#emailInput').val(),
+          ps = self.$('#passInput').val();
+
+      self.ref.createUser({
+        email: em,
+        password: ps
+      }, function(error, userData) {
+
+        if (error) {
+          switch (error.code) {
+            case "EMAIL_TAKEN":
+              console.log("The new user account cannot be created because the email is already in use.");
+              break;
+            case "INVALID_EMAIL":
+              console.log("The specified email is not a valid email.");
+              break;
+            default:
+              console.log("Error creating user:", error);
+            }
+        } else {
+          console.log("Successfully created user account with uid:", userData.uid);
+          // sign user in once account created
+          self.signInReq();
+        }
+
+      });
+    },
+
+    fetchBriefs: function() {
+      console.log('FETCHING BRIEFS BABY');
     }
 
-  });
+  }); // end AppView class declaration
 
   return AppView;
+
 });

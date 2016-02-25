@@ -1,8 +1,10 @@
 define([
   'jquery',
   'backbone',
+  'collections/books',
+  'views/appview',
   'firebase'
-], function($, Backbone, Firebase) {
+], function($, Backbone, Books, AppView, Firebase) {
 
   var BriefRouter = Backbone.Router.extend({
 
@@ -10,11 +12,13 @@ define([
     //  - get auth data for all routes and rout accordingly
 
     routes: {
-      '': 'testFunc'
+      '': 'defaultRoute',
+      '*actions': 'authRoute'
     },
 
-    testFunc: function() {
-      //
+    authRoute: function() {
+
+      // fires on every page
       console.log('testfunc called');
 
       var ref = new Firebase('https://dbrief.firebaseio.com'),
@@ -22,13 +26,33 @@ define([
 
       if (auth) {
         console.log('user authenticated!');
+
+        /*
+        // tells us if we're at home page
+        window.location.pathname === '/'
+        if ()
+        */
+
+
+
       } else {
         // render register.html
 
-        window.App.Vent.trigger('init');
+        // Fire useless event yeyey
+        Window.App.Vent.trigger('init');
 
 
       }
+    },
+
+    defaultRoute: function() {
+      this.authRoute();
+
+      new AppView({ collection: Books });
+
+      console.log('default route thing hahahahah');
+
+
     }
 
   });

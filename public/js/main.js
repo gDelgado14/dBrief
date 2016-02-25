@@ -30,13 +30,11 @@ requirejs.config({
 });
 
 require([
-  'backbone',
   'underscore',
-  'views/appview',
-  'collections/books',
+  'backbone',
   'routers/router'
 ],
-function(Backbone, _, AppView, Books, Workspace, Firebase) {
+function(_, Backbone, Workspace) {
   // note that there may be load failures because dependancies havent
   // been explicitly specified in require.config
   // this is because all current js modules have AMD exports in their
@@ -48,16 +46,12 @@ function(Backbone, _, AppView, Books, Workspace, Firebase) {
   /*
     TODO:
       - use animated loading icon while firebase fetches remote data
-        - how to detect when firebase has finished fetching
   */
-  window.App = {
+
+  // global event bus
+  Window.App = {
     Vent: _.extend({}, Backbone.Events)
   };
-
-
-  // pass instantiated Books collections
-  // emtpy list of rendered models
-  new AppView({ collection: Books });
 
   new Workspace();
   Backbone.history.start();

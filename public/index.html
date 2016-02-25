@@ -15,6 +15,9 @@
   <!-- FONT -->
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
+  <!-- Font Icons -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
   <!-- CSS -->
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/skeleton.css">
@@ -35,12 +38,41 @@
       width: 40%;
     }
 
-    #app-container {
+    #app-container > .module {
         margin-top: 10%;
     }
 
     .new-project-btn {
       margin-bottom: 3rem;
+    }
+
+    form {
+      padding: 10px 20px;
+      border-radius: 4px;
+      border: 1px solid #bbb;
+    }
+
+    .brief-name {
+      margin-bottom: 50px;
+    }
+
+    .section-separator {
+      margin-left: 10%;
+      margin-bottom: 8%;
+      width: 80%;
+      border-bottom: 2px solid #bbb;
+    }
+
+    .brief-form-input {
+      display: block;
+    }
+
+    .add-btn {
+      margin-right: 1%;
+    }
+
+    .add-section {
+      display: block;
     }
 
   </style>
@@ -50,11 +82,7 @@
 
 </head>
 
-<body id="app-container">
-
-  <!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-
+<body>
 
   <nav class="navbar">
     <div class="container">
@@ -62,21 +90,24 @@
     </div>
   </nav>
 
-  <div class="container">
-    <div class="row">
+  <div id="app-container">
 
-      <div class="twelve columns">
+    
+    <div class="container module">
+      <div class="row">
 
-        <div id="app-container" class="one-half column">
-          <a class="button new-project-btn" href="#">New Project</a>
+        <div class="one-half column">
+
+          <a id="test-id" class="button new-project-btn" href="#">New Project</a>
 
           <div id="test-insertion-point"></div>
 
         </div>
-
       </div>
     </div>
-  </div>
+
+
+  </div> <!-- ./#app-container -->
 
 
 

@@ -1,17 +1,24 @@
 <!-- to prevent page refresh use jquery.submit and return false after handling event -->
 <!-- https://stackoverflow.com/questions/1263852/prevent-form-redirect-or-refresh-on-submit -->
 <form class="register-form">
+  <fieldset>
+    <legend>Register</legend>
+    <a id="get-signin-form" href="#">
+      <p>... or sign in</p>
+    </a>
+    <p>To save your work, create an account. Otherwise click the shiny button above to try dBrief!</p>
+    <label for="firstInput">First Name</label>
+    <input class="u-full-width" type="text" placeholder="Jane" id="firstInput" required>
 
-  <label for="firstInput">First Name</label>
-  <input class="u-full-width" type="text" placeholder="Jane" id="firstInput" required>
+    <label for="lastInput">Last Name</label>
+    <input class="u-full-width" type="text" placeholder="Doe" id="lastInput" required>
 
-  <label for="lastInput">Last Name</label>
-  <input class="u-full-width" type="text" placeholder="Doe" id="lastInput" required>
+    <label for="emailInput">Your email</label>
+    <input class="u-full-width" type="email" placeholder="example@mailbox.com" id="emailInput" required>
 
-  <label for="emailInput">Your email</label>
-  <input class="u-full-width" type="email" placeholder="example@mailbox.com" id="emailInput" required>
+    <label for="passInput">Password</label>
+    <input class="u-full-width" type="password" id="passInput" required>
 
-  <label for="passInput">Password</label>
-  <input class="u-full-width" type="password" id="passInput" required>
-
+    <a id="register-req" class="button button-primary" href="#">Register!</a>
+  </fieldset>
 </form>
