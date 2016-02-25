@@ -4,8 +4,9 @@ define([
   'backbone',
   'text!templates/register.html',
   'text!templates/signin.html',
-  'firebase'
-], function($, _, Backbone, registerForm, signInForm, Firebase) {
+  'text!templates/brief.html',
+  'text!templates/btn.html'
+], function($, _, Backbone, registerForm, signInForm, briefTemp, btn) {
 
   // the top level piece of UI
   var AppView = Backbone.View.extend({
@@ -30,55 +31,27 @@ define([
       // and once client receives data
       //this.listenTo(this.collection, 'sync', this.render);
 
-      this.ref = new Firebase('https://dbrief.firebaseio.com');
+      // create local ref to firebase roo
+      this.ref = Window.App.ref;
 
       // no call to fetch is required, and any calls to fetch will be ignored
       // this.collection.fetch();
 
-      // render newly-added model
-      // backbonefire automatically syncs new model
-      this.listenTo(this.collection, 'loaded', this.render);
+      // listen to router triggers
+      // pass this as 3rd arg for context
+      Window.App.Vent.on("authed", this.fetchDash, this);
+      Window.App.Vent.on('init', this.getSignUpForm, this);
 
-      Window.App.Vent.on("authed", this.fetchBriefs);
-
-      // on init (from router), call getSignUpForm and pass the view as context for this
-      //Window.App.Vent.on('init', this.getSignUpForm, this);
-
-
-
-      // note: firebase uses 'collection.add' for each model
-      this.getSignUpForm();
-
+      // *************************************************************************************
+      // RATHER THAN RENDERING FORM TEMPLATES FROM APP VIEW ... INSTANTIATE A FORM VIEW
+      // https://addyosmani.com/backbone-fundamentals/#working-with-nested-views
+      // *************************************************************************************
 
     },
 
     render: function(collection) {
 
       console.log('render called....');
-      //var template = this.template;
-      /*
-      if (collection.length > 0) {
-
-        var list = this.$('#book-list');
-        var self = this;
-
-        collection.forEach(function(model) {
-            //debugger;
-            //self.rendered.push(model.id);
-            // if the model hasn't been rendered
-            //if (!self.$.inArray(model.id, self.rendered)) {
-              list.append( template(model.attributes) );
-            //}
-
-        });
-
-
-      }*/
-
-      // begin listening to collection 'add' methods only once
-      // all models have been loaded from firebase
-      // backbonefire fires 'add' event for each model
-      this.listenTo(this.collection, 'add', this.render);
 
     },
 
@@ -119,6 +92,8 @@ define([
       //named function for the sake of debugging
 
       var self = this,
+          firstName = self.$('#firstInput').val(),
+          lastName = self.$('#lastInput').val(),
           em = self.$('#emailInput').val(),
           ps = self.$('#passInput').val();
 
@@ -140,6 +115,22 @@ define([
             }
         } else {
           console.log("Successfully created user account with uid:", userData.uid);
+
+          // get a reference to "users" node
+          var usersRef = self.ref.child("users"),
+          userInfo = {};
+
+          // create reference of user in user node
+			    // Keys must be non-empty strings and can't contain ".", "#", "$", "/", "[", or "]"
+          userInfo[userData.uid] = {
+            first: firstName,
+            last: lastName,
+            email: em
+          };
+
+          // add newly created user record to "users" node
+      		usersRef.update(userInfo);
+
           // sign user in once account created
           self.signInReq();
         }
@@ -147,8 +138,8 @@ define([
       });
     },
 
-    fetchBriefs: function() {
-      console.log('FETCHING BRIEFS BABY');
+    fetchDash: function() {
+      this.$('#test-insertion-point').html(btn);
     }
 
   }); // end AppView class declaration

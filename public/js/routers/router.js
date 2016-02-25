@@ -16,6 +16,13 @@ define([
       '*actions': 'authRoute'
     },
 
+    defaultRoute: function() {
+      this.authRoute();
+
+      console.log('default route thing hahahahah');
+
+    },
+
     authRoute: function() {
 
       // fires on every page
@@ -24,8 +31,10 @@ define([
       var ref = new Firebase('https://dbrief.firebaseio.com'),
           auth = ref.getAuth();
 
+      new AppView({ collection: Books });
+
       if (auth) {
-        console.log('user authenticated!');
+        console.log('user: ', auth.uid);
 
         /*
         // tells us if we're at home page
@@ -33,7 +42,7 @@ define([
         if ()
         */
 
-
+        Window.App.Vent.trigger("authed");
 
       } else {
         // render register.html
@@ -41,18 +50,11 @@ define([
         // Fire useless event yeyey
         Window.App.Vent.trigger('init');
 
+        //
+        new AppView({ collection: Books });
+
 
       }
-    },
-
-    defaultRoute: function() {
-      this.authRoute();
-
-      new AppView({ collection: Books });
-
-      console.log('default route thing hahahahah');
-
-
     }
 
   });

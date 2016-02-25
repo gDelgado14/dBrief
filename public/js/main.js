@@ -50,7 +50,8 @@ function(_, Backbone, Workspace) {
 
   // global event bus
   Window.App = {
-    Vent: _.extend({}, Backbone.Events)
+    Vent: _.extend({}, Backbone.Events),
+    ref: new Firebase('https://dbrief.firebaseio.com')
   };
 
   new Workspace();
