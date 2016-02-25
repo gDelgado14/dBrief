@@ -32,9 +32,9 @@ requirejs.config({
 require([
   'underscore',
   'backbone',
-  'routers/router'
+  'views/appview'
 ],
-function(_, Backbone, Workspace) {
+function(_, Backbone, AppView) {
   // note that there may be load failures because dependancies havent
   // been explicitly specified in require.config
   // this is because all current js modules have AMD exports in their
@@ -54,7 +54,7 @@ function(_, Backbone, Workspace) {
     ref: new Firebase('https://dbrief.firebaseio.com')
   };
 
-  new Workspace();
-  Backbone.history.start();
+  new AppView();
+
 
 });

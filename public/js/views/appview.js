@@ -2,27 +2,19 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'text!templates/register.html',
-  'text!templates/signin.html',
-  'text!templates/brief.html',
-  'text!templates/btn.html'
-], function($, _, Backbone, registerForm, signInForm, briefTemp, btn) {
+  'routers/router',
+  'views/formview',
+  'views/dashview',
+  'views/projview'
+], function($, _, Backbone, Router, FormView, DashView, ProjView) {
 
   // the top level piece of UI
   var AppView = Backbone.View.extend({
 
-    // bind the bookview to an existing DOM element
+    // bind the app to an existing DOM element
     el: '#app-container',
 
-    // compile book template
-    //template: _.template(registerForm),
-
-    events: {
-      'click #get-signin-form': 'getSignInForm',
-      'click #get-signup-form': 'getSignUpForm',
-      'click #sign-in-req': 'signInReq',
-      'click #register-req':  'registerReq'
-    },
+    events: {},
 
     initialize: function() {
 
@@ -34,113 +26,73 @@ define([
       // create local ref to firebase roo
       this.ref = Window.App.ref;
 
+
+
       // no call to fetch is required, and any calls to fetch will be ignored
       // this.collection.fetch();
 
-      // listen to router triggers
+      // listen to router / view triggers
       // pass this as 3rd arg for context
       Window.App.Vent.on("authed", this.fetchDash, this);
-      Window.App.Vent.on('init', this.getSignUpForm, this);
+      Window.App.Vent.on("init", this.getForms, this);
+      Window.App.Vent.on("newProj", this.newProj, this);
+
 
       // *************************************************************************************
       // RATHER THAN RENDERING FORM TEMPLATES FROM APP VIEW ... INSTANTIATE A FORM VIEW
       // https://addyosmani.com/backbone-fundamentals/#working-with-nested-views
       // *************************************************************************************
 
+      // instantiate the router
+      this.router = new Router();
+      Backbone.history.start();
     },
 
-    render: function(collection) {
+    render: function(collection) {},
 
-      console.log('render called....');
+    getForms: function() {
+      this.$el.empty();
 
-    },
+      this.formView = new FormView();
 
-    getSignInForm: function() {
-      // toggle between singup and signin
-      this.$('#test-insertion-point').html(signInForm);
-    },
-
-    getSignUpForm: function() {
-      // toggle between singup and signin
-      this.$('#test-insertion-point').html(registerForm);
-    },
-
-    signInReq: function signInReq() {
-      //named function for the sake of debugging
-
-      var em = this.$('#emailInput').val(),
-          ps = this.$('#passInput').val();
-
-      console.log("email: ", em);
-      console.log("pass: ", ps);
-
-      this.ref.authWithPassword({
-        email: em,
-        password: ps
-      }, function(error, authData) {
-        if (error) {
-          console.log("Login Failed! ", error);
-        } else {
-          console.log("Authenticated successfully with payload: ", authData);
-          Window.App.Vent.trigger("authed");
-        }
-      });
-
-    },
-
-    registerReq: function registerReq() {
-      //named function for the sake of debugging
-
-      var self = this,
-          firstName = self.$('#firstInput').val(),
-          lastName = self.$('#lastInput').val(),
-          em = self.$('#emailInput').val(),
-          ps = self.$('#passInput').val();
-
-      self.ref.createUser({
-        email: em,
-        password: ps
-      }, function(error, userData) {
-
-        if (error) {
-          switch (error.code) {
-            case "EMAIL_TAKEN":
-              console.log("The new user account cannot be created because the email is already in use.");
-              break;
-            case "INVALID_EMAIL":
-              console.log("The specified email is not a valid email.");
-              break;
-            default:
-              console.log("Error creating user:", error);
-            }
-        } else {
-          console.log("Successfully created user account with uid:", userData.uid);
-
-          // get a reference to "users" node
-          var usersRef = self.ref.child("users"),
-          userInfo = {};
-
-          // create reference of user in user node
-			    // Keys must be non-empty strings and can't contain ".", "#", "$", "/", "[", or "]"
-          userInfo[userData.uid] = {
-            first: firstName,
-            last: lastName,
-            email: em
-          };
-
-          // add newly created user record to "users" node
-      		usersRef.update(userInfo);
-
-          // sign user in once account created
-          self.signInReq();
-        }
-
-      });
+      this.$el.html(this.formView.el);
     },
 
     fetchDash: function() {
-      this.$('#test-insertion-point').html(btn);
+
+      // clear current workspace
+      if (this.formView) {
+        this.formView.remove();
+      } else if (this.projView) {
+        this.projView.remove();
+      }
+
+      // this method might be redundant with view.remove()
+      this.$el.empty();
+
+      this.dashView = new DashView();
+
+      this.$el.html(this.dashView.el);
+    },
+
+    newProj: function() {
+
+      // clear current workspace
+      if (this.formView) {
+        this.formView.remove();
+      } else if (this.dashView) {
+        this.dashView.remove();
+      }
+
+      this.$el.empty();
+
+      this.projView = new ProjView();
+
+      this.$el.html(this.projView.el);
+
     }
+
+
 
   }); // end AppView class declaration
 

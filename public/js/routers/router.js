@@ -16,7 +16,12 @@ define([
       '*actions': 'authRoute'
     },
 
+    initialize: function () {
+      // there should be
+    },
+
     defaultRoute: function() {
+      // check authentication state
       this.authRoute();
 
       console.log('default route thing hahahahah');
@@ -28,10 +33,10 @@ define([
       // fires on every page
       console.log('testfunc called');
 
-      var ref = new Firebase('https://dbrief.firebaseio.com'),
+      var ref = Window.App.ref,
           auth = ref.getAuth();
 
-      new AppView({ collection: Books });
+
 
       if (auth) {
         console.log('user: ', auth.uid);
@@ -46,12 +51,9 @@ define([
 
       } else {
         // render register.html
-
+        console.log("trigger init ... ");
         // Fire useless event yeyey
         Window.App.Vent.trigger('init');
-
-        //
-        new AppView({ collection: Books });
 
 
       }
