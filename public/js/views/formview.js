@@ -61,7 +61,7 @@ define([
           console.log("Login Failed! ", error);
         } else {
           console.log("Authenticated successfully with payload: ", authData);
-          Window.App.Vent.trigger("authed");
+          Window.App.Vent.trigger("authed", authData.uid);
         }
       });
 

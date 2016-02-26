@@ -16,9 +16,7 @@ define([
       '*actions': 'authRoute'
     },
 
-    initialize: function () {
-      // there should be
-    },
+    initialize: function () {},
 
     defaultRoute: function() {
       // check authentication state
@@ -41,6 +39,7 @@ define([
       if (auth) {
         console.log('user: ', auth.uid);
 
+        Window.App.uid = auth.uid;
         /*
         // tells us if we're at home page
         window.location.pathname === '/'

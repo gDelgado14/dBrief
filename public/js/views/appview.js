@@ -18,18 +18,8 @@ define([
 
     initialize: function() {
 
-      // add event listener. Render once books have been fetched
-      // FIX: sync event seems to be firing on call to fetched
-      // and once client receives data
-      //this.listenTo(this.collection, 'sync', this.render);
-
-      // create local ref to firebase roo
+      // create local ref to firebase root
       this.ref = Window.App.ref;
-
-
-
-      // no call to fetch is required, and any calls to fetch will be ignored
-      // this.collection.fetch();
 
       // listen to router / view triggers
       // pass this as 3rd arg for context
@@ -60,6 +50,10 @@ define([
 
     fetchDash: function() {
 
+      var uid = Window.App.uid;
+
+      console.log("From Fetch Dash. UID is: ", uid);
+
       // clear current workspace
       if (this.formView) {
         this.formView.remove();
@@ -70,7 +64,12 @@ define([
       // this method might be redundant with view.remove()
       this.$el.empty();
 
-      this.dashView = new DashView();
+      this.ref.child('users/' + uid).on('value', function(snap) {
+        //Async callback
+        Window.App.userData = snap.val();
+      });
+
+      this.dashView = new DashView(this.collection);
 
       this.$el.html(this.dashView.el);
     },
@@ -87,6 +86,10 @@ define([
       this.$el.empty();
 
       this.projView = new ProjView();
+
+      // navigating is running authRoute, triggering authed event,
+      // and looping back to dash.
+      //this.router.navigate('brief/12');
 
       this.$el.html(this.projView.el);
 

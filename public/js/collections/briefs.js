@@ -14,11 +14,10 @@ define([
     // urls will have user's uid and find array of brief id's
     // that user has access to
     //https://dbrief.firebaseio.com/users/ec5b4cd4-b7e4-40cc-a9f2-41fd95328635
-    initialize: function(props) {
-      this.url = props.url
-    },
 
-    initialize: function() {
+    initialize: function(props) {
+      console.log(props);
+      this.url = props.url
 
         // collection fires a 'sync' event AFTER all remote
         // data has been retrieved from this.url
@@ -33,6 +32,6 @@ define([
   });
 
   // passing an instance of BooksCollection to BooksView
-  return new BriefsCollection();
+  return BriefsCollection;
 
 });
