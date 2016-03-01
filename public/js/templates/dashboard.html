@@ -1,0 +1,12 @@
+<div class="row">
+    <a class="button new-project-btn" href="#">New Brief</a>
+    <% if (briefs) { %>
+      <% keys.forEach(function(key) { %>
+        <a data-id="<%= key %>" class="button button-primary" href="#">
+          <h5 data-id="<%= key %>">
+            <%= briefs[key] %>
+          </h5>
+        </a>
+      <% }); %>
+    <% } %>
+</div>

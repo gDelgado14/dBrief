@@ -32,9 +32,10 @@ requirejs.config({
 require([
   'underscore',
   'backbone',
-  'views/appview'
+  'firebase',
+  'routers/router'
 ],
-function(_, Backbone, AppView) {
+function(_, Backbone, Firebase, Router) {
   // note that there may be load failures because dependancies havent
   // been explicitly specified in require.config
   // this is because all current js modules have AMD exports in their
@@ -43,10 +44,6 @@ function(_, Backbone, AppView) {
 
   // baseUrl -- > 'js'
 
-  /*
-    TODO:
-      - use animated loading icon while firebase fetches remote data
-  */
 
   // global event bus
   Window.App = {
@@ -54,7 +51,9 @@ function(_, Backbone, AppView) {
     ref: new Firebase('https://dbrief.firebaseio.com')
   };
 
-  new AppView();
+  // instantiate the router
+  new Router();
+  Backbone.history.start();
 
 
 });

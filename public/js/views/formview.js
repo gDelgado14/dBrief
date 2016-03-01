@@ -9,8 +9,6 @@ define([
   // the top level piece of UI
   var FormView = Backbone.View.extend({
 
-    className: 'module container',
-
     // compile book template
     //template: _.template(registerForm),
 
@@ -18,15 +16,14 @@ define([
       'click #get-signin-form': 'getSignInForm',
       'click #get-signup-form': 'getSignUpForm',
       'click #sign-in-req': 'signInReq',
-      'click #register-req':  'registerReq'
+      'click #register-req':  'registerReq',
+      'keypress form': 'submitOnEnter'
     },
 
     initialize: function() {
 
       // create local ref to firebase roo
       this.ref = Window.App.ref;
-
-      this.getSignUpForm();
 
     },
 
@@ -39,7 +36,7 @@ define([
 
     getSignUpForm: function() {
       // toggle between singup and signin
-      console.log("get sign up form");
+      console.log("get sign up form ... ");
       this.$el.empty();
       this.$el.append(registerForm);
     },
@@ -61,7 +58,10 @@ define([
           console.log("Login Failed! ", error);
         } else {
           console.log("Authenticated successfully with payload: ", authData);
-          Window.App.Vent.trigger("authed", authData.uid);
+
+          // pass user uid to global app var
+          Window.App.uid = authData.uid;
+          Window.App.Vent.trigger("authed");
         }
       });
 
@@ -117,8 +117,25 @@ define([
       });
     },
 
+    submitOnEnter: function(e) {
+
+      if (e.which === 13) {
+        if ( this.$('form').attr('class') === 'register-form' ) {
+          this.registerReq();
+        } else if ( this.$('form').attr('class') === 'signin-form' ) {
+          this.signInReq();
+        }
+      }
+
+    },
+
     fetchDash: function() {
       this.$('#test-insertion-point').html(btn);
+    },
+
+    render: function() {
+      this.getSignUpForm();
+      return this;
     }
 
   }); // end FormView class declaration

@@ -2,11 +2,10 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'routers/router',
   'views/formview',
   'views/dashview',
   'views/projview'
-], function($, _, Backbone, Router, FormView, DashView, ProjView) {
+], function($, _, Backbone, FormView, DashView, ProjView) {
 
   // the top level piece of UI
   var AppView = Backbone.View.extend({
@@ -33,9 +32,7 @@ define([
       // https://addyosmani.com/backbone-fundamentals/#working-with-nested-views
       // *************************************************************************************
 
-      // instantiate the router
-      this.router = new Router();
-      Backbone.history.start();
+
     },
 
     render: function(collection) {},
@@ -69,8 +66,7 @@ define([
         Window.App.userData = snap.val();
       });
 
-      this.dashView = new DashView(this.collection);
-
+      this.dashView = new DashView();
       this.$el.html(this.dashView.el);
     },
 
@@ -94,8 +90,6 @@ define([
       this.$el.html(this.projView.el);
 
     }
-
-
 
   }); // end AppView class declaration
 
